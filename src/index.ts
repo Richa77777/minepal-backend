@@ -4,28 +4,20 @@ import { server as WebSocketServer } from 'websocket';
 import { setupDeepgram } from './deepgram';
 import { ListenLiveClient } from '@deepgram/sdk';
 import openaiRoutes from './routes/openai';
-import fs from 'fs';
-import path from 'path';
 
 const isLocalTest = process.env.LOCAL_TEST === 'true';
+const port = parseInt(process.env.PORT || '11111', 10);
 
-const fastify: FastifyInstance = isLocalTest
-    ? Fastify()
-    : Fastify({
-        https: {
-            key: fs.readFileSync(path.join('/etc/letsencrypt/live/backend.minepal.net', 'privkey.pem')),
-            cert: fs.readFileSync(path.join('/etc/letsencrypt/live/backend.minepal.net', 'fullchain.pem')),
-        },
-    });
+const fastify: FastifyInstance = Fastify(); // Отключаем SSL для локальной разработки
 
-const port = 11111;
-
+// Регистрируем плагины
 fastify.register(fastifyCors, {
     origin: '*',
     credentials: true,
 });
 fastify.register(openaiRoutes);
 
+// Простая проверка соединения
 fastify.get('/ping', async (request: FastifyRequest, reply: FastifyReply) => {
     reply.send('pong');
 });
@@ -35,6 +27,7 @@ const startServer = async () => {
         const address = await fastify.listen({ port, host: '0.0.0.0' });
         console.log(`Server running at ${address}`);
 
+        // Настроим WebSocket сервер
         const wsServer = new WebSocketServer({
             httpServer: fastify.server,
             autoAcceptConnections: false,

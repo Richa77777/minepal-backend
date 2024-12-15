@@ -1,0 +1,20 @@
+# npm audit report
+
+cookie  <0.7.0
+cookie accepts cookie name, path, and domain with out of bounds characters - https://github.com/advisories/GHSA-pxg6-pf52-xh8x
+fix available via `npm audit fix`
+node_modules/cookie
+  light-my-request  3.7.0 - 5.13.0 || 6.0.0-pre.fv5.1 - 6.0.0
+  Depends on vulnerable versions of cookie
+  node_modules/light-my-request
+
+find-my-way  5.5.0 - 8.2.1
+Severity: high
+find-my-way has a ReDoS vulnerability in multiparametric routes - https://github.com/advisories/GHSA-rrr8-f88r-h8q6
+fix available via `npm audit fix`
+node_modules/find-my-way
+
+3 vulnerabilities (2 low, 1 high)
+
+To address all issues, run:
+  npm audit fix
